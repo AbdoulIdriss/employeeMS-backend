@@ -5,9 +5,9 @@ class EmployeeController {
     getAllEmployees = async(request: express.Request, response: express.Response) => {
         try {
             const employees = await EmployeeModel.find();
-            return response.sendStatus(200).json({data: employees})
+            return response.status(200).json({data: employees})
         } catch (error) {
-            return response.sendStatus(404);
+            return response.status(404).json({message: 'Employees not found'});
         }
     }
 
@@ -15,15 +15,16 @@ class EmployeeController {
         try {
             const {id} = req.params
             const employee = await EmployeeModel.findById(id);
-            return response.sendStatus(200).json({data: employee})
+            return response.status(200).json({data: employee})
         } catch (error) {
-            return response.sendStatus(404);
+            return response.status(404).json({message: 'Employee not found'});
+            
         }
     }
 
-    createEmployee = async(req: express.Request, res: express.Response) => {
+    createEmployee = async(request: express.Request, response: express.Response) => {
         try {
-            const {name, email, mobile, dob, doj } = req.body
+            const {name, email, mobile, dob, doj } = request.body      
             const employee = new EmployeeModel({
                 name, 
                 email, 
@@ -31,12 +32,13 @@ class EmployeeController {
                 dob, 
                 doj
             })
-            
-            await employee.save()
+                   
+            await employee.save();
             return response.sendStatus(201).json({message: "Employee created successfully", data: employee})
             
         } catch (error) {
-            return response.sendStatus(404);
+            console.log(error);
+            return response.sendStatus(404).json({message: 'error'});
         }
     }
 
@@ -57,16 +59,15 @@ class EmployeeController {
                 await employee.save()
                 return response.sendStatus(200).json({message: "Employee updated successfully", data: employee})
             }
-            
-            
+            return response.sendStatus(400);          
         } catch (error) {
             return response.sendStatus(404);
         }
     }
 
-    deleteEmployee = async(req: express.Request, res: express.Response) => {
+    deleteEmployee = async(request: express.Request, response: express.Response) => {
         try {
-            const {id} = req.params
+            const {id} = request.params
             await EmployeeModel.findByIdAndDelete({_id: id});
             return response.sendStatus(200).json({message: "Employee deleted successfully"})
         } catch (error) {

@@ -2,7 +2,7 @@ import express, { response } from "express"
 import { EmployeeModel } from "../Models/Employee";
 
 class EmployeeController {
-    getAllEmployees = async(req: express.Request, res: express.Response) => {
+    getAllEmployees = async(request: express.Request, response: express.Response) => {
         try {
             const employees = await EmployeeModel.find();
             return response.sendStatus(200).json({data: employees})
